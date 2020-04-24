@@ -21,12 +21,12 @@ server.get("/users", (req, res) => {
 server.post("/users", (req, res) => {
   const userInfo = req.body;
   Users.insert(userInfo)
-    .then(ids => {
-      res.status(201).json({ message: "User created successfully" })
-    })
-    .catch(error => {
-      res.status(500).json({ errorMessage: error.message })
-    })
+  .then(ids => {
+    res.status(201).json({ message: "User created successfully" });  
+  })
+  .catch(error => {
+    res.status(500).json({ errorMessage: error.message })
+  })
 })
 
 module.exports = server;

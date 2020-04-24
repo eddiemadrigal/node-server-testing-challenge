@@ -1,9 +1,10 @@
 const request = require("supertest");
 
 const server = require("./server.js");
-const db = require("../data/dbConfig.js");
+const db = require("../data/dbConfig");
 
 describe("server", function () {
+  
   describe("GET /", function () {
     it("should return 200 OK", function () {
       // make a GET request to / endpoint on the server
@@ -17,49 +18,43 @@ describe("server", function () {
   });
 
   describe("POST /users", function () {
-    beforeEach(async () => {
-      await db("users").truncate(); // empty the table and reset the id back to 1
-    });
 
-    it("return 201 on success", function () {
-      return request(server)
+    beforeEach(async () => {
+      await db('users').truncate();
+    })
+
+    it("should return 201 on success", function () {
+      return request(server) 
         .post("/users")
-        .send({ name: "gaffer" })
+        .send({ name: "Gabe"})
         .then(res => {
           expect(res.status).toBe(201);
         });
     });
 
-    it('should return a message saying "user created successfully"', function () {
-      return request(server)
+    it('should return a message saying "User created successfully"', function () {
+      return request(server) 
         .post("/users")
-        .send({ name: "gaffer" })
+        .send({ name: "Gabe"})
         .then(res => {
-          expect(res.body.message).toBe("user created successfully");
+          expect(res.body.message).toBe("User created successfully");
         });
     });
 
-    it("add the user to the db", async function () {
-      const userName = "gaffer";
-
-      const existing = await db("users").where({ name: userName });
+    it('add the user to the db', async function () {
+      const userName = "Gabe";
+      const existing = await db('users').where({ name: userName });
       expect(existing).toHaveLength(0);
-
-      await request(server)
+      await request(server) 
         .post("/users")
         .send({ name: userName })
         .then(res => {
-          expect(res.body.message).toBe("user created successfully");
+          expect(res.body.message).toBe("User created successfully");
         });
-      await request(server)
-        .post("/users")
-        .send({ name: "sam" })
-        .then(res => {
-          expect(res.body.message).toBe("user created successfully");
-        });
-
-      const inserted = await db("users"); //.where({ name: userName });
-      expect(inserted).toHaveLength(2);
+        const inserted = await db('users').where({ name: userName });
+        expect(inserted).toHaveLength(1);
     });
   });
+  
 });
+
